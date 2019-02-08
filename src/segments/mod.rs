@@ -38,6 +38,7 @@ pub struct Segment {
     before: &'static str,
     after: &'static str,
     conditional: bool,
+    last: bool,
 
     escaped: bool,
     text: Cow<'static, str>
@@ -53,6 +54,7 @@ impl Segment {
             before: "",
             after: "",
             conditional: false,
+            last: false,
 
             escaped: false,
             text:  text.into()
@@ -77,6 +79,13 @@ impl Segment {
     pub fn is_conditional(&self) -> bool {
         self.conditional
     }
+    pub fn into_last(mut self) -> Self {
+        self.last = true;
+        self
+    }
+    pub fn is_last(&self) -> bool {
+        self.last
+    }
     pub fn escape(&mut self, shell: Shell) {
         if self.escaped {
             return;
@@ -89,6 +98,12 @@ impl Segment {
         match next {
             Some(next) if next.is_conditional() => {},
             Some(next) if next.bg == self.bg => print!("{}", Fg(shell, theme.separator_fg)),
+            Some(next) if next.is_last() => print!("{}{}{}{}{}\n",
+                       Reset(shell, false),
+                       Reset(shell, true),
+                       Fg(shell, self.bg),
+                       Reset(shell, false),
+                       Reset(shell, true),),
             Some(next) => print!("{}{}",  Fg(shell, self.bg), Bg(shell, next.bg)),
             // Last tile resets colors
             None       => print!("{}{}{}",Fg(shell, self.bg), Reset(shell, false), Reset(shell, true))
