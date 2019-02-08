@@ -1,5 +1,5 @@
 #[cfg(feature = "flame")] use flame;
-use {Powerline, Segment};
+use {dirs, Powerline, Segment};
 use git2::{BranchType, ObjectType, Repository, Status, StatusOptions, StatusShow};
 
 fn discover_if_none(git: &mut Option<Repository>) -> bool {
@@ -16,10 +16,11 @@ fn statuses_if_none(git: &Repository, statuses: &mut Option<Vec<Status>>) -> boo
     let _guard = flame::start_guard("git status");
 
     if statuses.is_none() {
+        let include_untracked = git.path() != dirs::home_dir().unwrap().join(".git");
         *statuses = git.statuses(Some(
                 StatusOptions::new()
                     .show(StatusShow::IndexAndWorkdir)
-                    .include_untracked(true)
+                    .include_untracked(include_untracked)
                     .renames_from_rewrites(true)
                     .renames_head_to_index(true)
             ))
