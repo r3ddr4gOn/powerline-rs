@@ -65,6 +65,13 @@ Pull requests are welcome, though.
 
 Also, the `jobs` module won't work with `--shell bare`.
 
+### Custom changes in this fork
+
+This fork implements the following changes:
+
+- The `root` segment always inserts a newline before its output (this is not configurable)
+- In case there is a git repository in the current user\`s home directory, untracked files are ignored for this repository (the git2 crate does not respect the git config files)
+
 # Add it to your shell
 
 ## Bash
