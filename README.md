@@ -105,3 +105,15 @@ fn PROMPT
     powerline-rs --shell bare
 end
 ```
+
+## Custom segment order
+
+The segment order can be personalized with the `--modules` flag. (see --help for more information).
+
+For example (Bash):
+```Bash
+prompt() {
+    PS1="$(powerline-rs --modules jobs,cwd,git,gitstage,virtualenv,root --shell bash $?)"
+}
+PROMPT_COMMAND=prompt
+```
